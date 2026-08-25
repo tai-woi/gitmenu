@@ -26,7 +26,7 @@ main_menu() {
   q     退出
 ==== Git 主菜单 ====
 '
-    read -p '请选择功能：' main_choice
+    read -e -p '请选择功能：' main_choice
     case $main_choice in
       c)    submenu_config ;;
       ic)   submenu_init ;;
@@ -53,7 +53,7 @@ submenu_config() {
   while true; do
     clear
     echo "
----- 基本设置 -----
+---- 基本设置 ----
   c     设置级别（当前 $level）
   csg   执行 config 查找设置并显示来源
 
@@ -73,10 +73,10 @@ submenu_config() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 "
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       c)
-        read -p '可输入 [{ (l)ocal | (g)lobal | (s)ystem }]，或留空 global：' c
+        read -e -p '可输入 { (l)ocal | (g)lobal | (s)ystem }，或留空 global：' c
         case $c in
           l|'local')
             level='local' ;;
@@ -90,27 +90,27 @@ submenu_config() {
         esac
         ;;
       csg)
-        read -p '可输入 [正则表达式]，或留空显示全部：' param
+        read -e -p '可输入 [正则表达式]，或留空显示全部：' param
         echo ">>> git config --show-origin --get-regexp '${param:-.}'"
         git config --show-origin --get-regexp "${param:-.}"
         ;;
       cun)
-        read -p '请输入 <用户名>：' param
+        read -e -p '请输入 <用户名>：' param
         echo ">>> git config --$level user.name '${param}'"
         git config --$level user.name "${param}"
         ;;
       cue)
-        read -p '请输入 <电子邮箱>：' param
+        read -e -p '请输入 <电子邮箱>：' param
         echo ">>> git config --$level user.email '${param}'"
         git config --$level user.email "${param}"
         ;;
       cce)
-        read -p '可输入 [编辑器]，或留空使用 vi 编辑器：' param
+        read -e -p '可输入 [编辑器]，或留空使用 vi 编辑器：' param
         echo ">>> git config --$level core.editor '${param:-vi}'"
         git config --$level core.editor "${param:-vi}"
         ;;
       cld)
-        read -p '请输入 { (d)efault | (h)uman | (i)so | (l)ocal | (r)elative | (s)hort }：' c
+        read -e -p '请输入 { (d)efault | (h)uman | (i)so | (l)ocal | (r)elative | (s)hort }：' c
         case $c in
           d|'default')
             echo ">>> git config --$level log.date default"
@@ -142,12 +142,12 @@ submenu_config() {
         esac
         ;;
       csd)
-        read -p '可输入 [绝对路径]，或留空使用当前路径：' param
-        echo ">>> git config --$level safe.directory ${param:-$(pwd)}"
-        git config --$level safe.directory "${param:-$(pwd)}"
+        read -e -p '可输入 [绝对路径]，或留空使用当前路径：' param
+        echo ">>> git config --$level --add safe.directory ${param:-$(pwd)}"
+        git config --$level --add safe.directory "${param:-$(pwd)}"
         ;;
       ccg)
-        read -p '请输入 { (f)alse | (t)rue }：' c
+        read -e -p '请输入 { (f)alse | (t)rue }：' c
         case $c in
           f|false)
             echo ">>> git config --$level commit.gpgsign false"
@@ -163,7 +163,7 @@ submenu_config() {
         esac
         ;;
       cus)
-        read -p '请输入 <签名密钥>：' param
+        read -e -p '请输入 <签名密钥>：' param
         echo ">>> git config --$level user.signingkey 'param'"
         git config --$level user.signingkey "param"
         ;;
@@ -184,8 +184,8 @@ submenu_config() {
 
 如要新增或修改其它设置，可用编辑器直接修改配置文件。
 "
-        read -p '可输入 y 执行：' c
-        if [[ "$c" == 'y' ]]; then
+        read -e -p '可输入 [do] 执行：' c
+        if [[ "$c" == 'do' ]]; then
           git config --$level core.autocrlf input
           git config --$level init.defaultBranch main
 
@@ -221,7 +221,7 @@ submenu_init() {
   while true; do
     clear
     echo '
----- 初始化 -----
+---- 初始化 ----
   i     执行 init 初始化
   ib    执行 init 创建裸仓库
 
@@ -234,35 +234,35 @@ submenu_init() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       i)
-        read -p '可输入 [仓库目录]，或留空使用当前目录：' param
+        read -e -p '可输入 [仓库目录]，或留空使用当前目录：' param
         echo ">>> git init $param"
         git init $param
         ;;
       ib)
-        read -p '请输入 <仓库名称>：' param
+        read -e -p '请输入 <仓库名称>：' param
         echo ">>> git init --bare $param"
         git init --bare $param
         ;;
       c)
-        read -p '请输入 <远程仓库地址> [仓库目录]：' param
+        read -e -p '请输入 <远程仓库地址> [仓库目录]：' param
         echo ">>> git clone $param"
         git clone $param
         ;;
       cd)
-        read -p '请输入 <深度> <远程仓库地址> [仓库目录]：' param
+        read -e -p '请输入 <深度> <远程仓库地址> [仓库目录]：' param
         echo ">>> git clone --depth $param"
         git clone --depth $param
         ;;
       cr)
-        read -p '请输入 <远程仓库地址> [仓库目录]：' param
+        read -e -p '请输入 <远程仓库地址> [仓库目录]：' param
         echo ">>> git clone --recursive $param"
         git clone --recursive $param
         ;;
       crsd)
-        read -p '请输入 <深度> <远程仓库地址> [仓库目录]：' param
+        read -e -p '请输入 <深度> <远程仓库地址> [仓库目录]：' param
         echo ">>> git clone --recursive --shallow-submodules --depth $param"
         git clone --recursive --shallow-submodules --depth $param
         ;;
@@ -300,7 +300,8 @@ submenu_log() {
   s     设置 log 默认起始日期（当前 ${filter_since:-不限}）
   u     设置 log 默认终止日期（当前 ${filter_until:-不限}）
 
-  log   执行 log 图形化查看日志
+  log   执行 log 图形化概览日志
+  log2  执行 log 图形化查看指定分支日志
   l     执行 log 线性查看日志
 
   lg    执行 log 筛选日志记录
@@ -313,7 +314,7 @@ submenu_log() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 "
-    read -p "请选择操作，或 q 返回：" choice
+    read -e -p "请选择操作，或 q 返回：" choice
     case $choice in
       s)
         read -e -p '可输入 [起始日期]，或留空不限：' -i "$filter_since" filter_since
@@ -324,7 +325,7 @@ submenu_log() {
         [[ -n "filter_until" ]] && log_su[1]=--until="$filter_until" || unset 'log_su[1]'
         ;;
       log)
-        read -p '可输入 [{ (b)ranches | (r)emotes | (a)ll }]，或留空查看本地分支：' c
+        read -e -p '可输入 { (b)ranches | (r)emotes | (a)ll }，或留空查看本地分支：' c
         case $c in
           ''|b|'branches')
             echo ">>> git log --oneline --graph --branches ${log_su[@]}"
@@ -343,9 +344,13 @@ submenu_log() {
             ;;
         esac
         ;;
+      log2)
+        read -e -p '可输入 [分支A] [分支B] [^分支C] 等参数：' param
+        git log --oneline --graph "${log_su[@]}" $param
+        ;;
       l)
         git branch -vv -a
-        read -p '可输入 [-5] [提交A..提交B] [-- 文件或目录]：' param
+        read -e -p '可输入 [-8] [提交A..提交B] [-- 文件或目录]：' param
         show_log "$param" "${log_su[@]}"
         ;;
       lg)
@@ -353,7 +358,7 @@ submenu_log() {
         read -e -p '可输入 [内容文字] 筛选，如果以 G: 开头则支持正则表达式：' -i "$filter_diff" filter_diff
         read -e -p '可输入 [作者] 筛选，支持正则表达式：' -i "$filter_author" filter_author
         read -e -p '可输入 [提交者] 筛选，支持正则表达式：' -i "$filter_committer" filter_committer
-        read -e -p '可输入 [-5] [提交A..提交B] [-- 文件或目录] 查找：' -i "$range" range
+        read -e -p '可输入 [-8] [提交A..提交B] [-- 文件或目录] 查找：' -i "$range" range
 
         log_params=()
         [[ -n $filter_message ]] && log_params+=(--grep="$filter_message")
@@ -370,19 +375,18 @@ submenu_log() {
         show_log "$range" "${log_su[@]}" "${log_params[@]}"
         ;;
       ll)
-        read -p '请输入 { <起始行>,<终止行>:<文件路径> | :<函数名>:<文件路径> }：' param
+        read -e -p '请输入 { <起始行>,<终止行>:<文件路径> | :<函数名>:<文件路径> }：' param
         echo ">>> git log -L $param"
         git log "${log_su[@]}" -L "$param"
         ;;
       r)
-        read -p '可输入 [分支名] 等参数，或留空默认：' param
-        read -p '可输入 [{ --numstat | --stat }]，或留空默认：' param2
-        echo ">>> git reflog $param $param2"
-        git reflog --pretty=format:"$reflog_format" $param $param2
+        read -e -p '可输入 [--stat] [分支名] 等参数，或留空默认：' param
+        echo ">>> git reflog $param"
+        git reflog --pretty=format:"$reflog_format" $param
         ;;
       rg)
-        read -p '可输入 [查找文字]，支持正则表达式：' param
-        read -p '可输入 [{ --numstat | --stat }]，或留空默认：' param2
+        read -e -p '可输入 [查找文字]，支持正则表达式：' param
+        read -e -p '可输入 [--stat] 等参数，或留空默认：' param2
         echo ">>> git log -g --grep-reflog='$param' $param2"
         git log --pretty=format:"$reflog_format" -g --grep-reflog="$param" $param2
         ;;
@@ -402,12 +406,13 @@ submenu_status() {
   while true; do
     clear
     echo '
----- 工作状态 -----
+---- 工作状态 ----
   ssb   执行 status 短格式查看状态和分支信息
   sis   执行 status 完整包含忽略和储藏的文件
 
-  aa    执行 add 添加所有变动
+  a     执行 add 添加未跟踪的文件或目录
   ai    执行 add 进入交互式暂存模式
+  r     执行 restore 恢复文件状态
 
   d     执行 diff 比较，默认比较工作区与暂存区
   ds    执行 diff 比较暂存区与当前所在提交
@@ -417,38 +422,64 @@ submenu_status() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       ssb)
-        read -p '可输入 [-- 文件或目录]，或留空显示全部：' param
+        read -e -p '可输入 [-- 文件或目录]，或留空显示全部：' param
         echo ">>> git status -sb $param"
         git status -sb $param
         ;;
       sis)
-        read -p '可输入 [-- 文件或目录]，或留空显示全部：' param
+        read -e -p '可输入 [-- 文件或目录]，或留空显示全部：' param
         echo ">>> git status --ignored --show-stash $param"
         git status --ignored --show-stash $param
         ;;
-      aa)
-        echo ">>> git add -A"
-        git add -A
+      a)
+        git status -sb
+        read -e -p '可输入 [文件或目录]，或留空添加全部：' param
+        echo ">>> git add ${param:--A}"
+        git add ${param:--A}
         ;;
       ai)
         echo ">>> git add -i"
         git add -i
         ;;
+      r)
+        git status -sb
+        read -e -p '可输入 { (w)orktree | (s)taged | (ws) }，或留空恢复工作区：' c
+        case $c in
+          ''|w|'worktree')
+            read -e -p '可输入 [文件或目录]，或留空使用交互模式：' param
+            echo ">>> git restore ${param:--p}"
+            git restore ${param:--p}
+            ;;
+          s|'staged')
+            read -e -p '可输入 [文件或目录]，或留空使用交互模式：' param
+            echo ">>> git restore --staged ${param:--p}"
+            git restore --staged ${param:--p}
+            ;;
+          'ws')
+            read -e -p '可输入 [文件或目录]，或留空使用交互模式：' param
+            echo ">>> git restore -WS ${param:--p}"
+            git restore -WS ${param:--p}
+            ;;
+          *)
+            echo "无效输入：$c"
+            ;;
+        esac
+        ;;
       d)
-        read -p '可输入 [远程分支..本地分支] 等参数，或留空比较工作区与暂存区：' param
+        read -e -p '可输入 [--stat] [远程分支..本地分支] 等参数，或留空比较工作区与暂存区：' param
         echo ">>> git diff $param"
         git diff $param
         ;;
       ds)
-        read -p '可输入 [-- 文件或目录] 等参数，或留空显示全部：' param
+        read -e -p '可输入 [--stat] [-- 文件或目录] 等参数，或留空显示全部：' param
         echo ">>> git diff --staged $param"
         git diff --staged $param
         ;;
       dh)
-        read -p '可输入 [-- 文件或目录] 等参数，或留空显示全部：' param
+        read -e -p '可输入 [--stat] [-- 文件或目录] 等参数，或留空显示全部：' param
         echo ">>> git diff HEAD $param"
         git diff HEAD $param
         ;;
@@ -468,7 +499,7 @@ submenu_commit() {
   while true; do
     clear
     echo '
----- 提交 -----
+---- 提交 ----
   c     执行 commit 提交暂存的变更
   ca    执行 commit 修正当前所在提交
   cf    执行 commit 标记修复以前的提交
@@ -485,42 +516,42 @@ submenu_commit() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       c)
         git status -sb
-        read -p '可输入 [提交说明]，或留空使用编辑器撰写：' param
+        read -e -p '可输入 [提交说明]，或留空使用编辑器撰写：' param
         echo ">>> git commit ${param:+-m '$param'}"
         git commit ${param:+-m "$param"}
         ;;
       ca)
         git status -sb
-        read -p '可输入 [提交说明]，或留空编辑原提交说明：' param
+        read -e -p '可输入 [提交说明]，或留空编辑原提交说明：' param
         echo ">>> git commit --amend ${param:+-m '$param'}"
         git commit --amend ${param:+-m "$param"}
         ;;
       cf)
         git log --oneline $log_n
-        read -p '请输入 <提交哈希或引用>：' param
+        read -e -p '请输入 <提交哈希或引用>：' param
         echo ">>> git commit --fixup $param"
         git commit --fixup $param
         ;;
       cs)
         git log --oneline $log_n
-        read -p '请输入 <提交哈希或引用>：' param
+        read -e -p '请输入 <提交哈希或引用>：' param
         echo ">>> git commit --squash $param"
         git commit --squash $param
         ;;
       ria)
         git log --oneline $log_n
-        read -p '请输入 <提交哈希或引用>，需指定包含所有修复或压缩的前一个提交：' param
+        read -e -p '请输入 <提交哈希或引用>，需指定包含所有修复或压缩的前一个提交：' param
         echo ">>> git rebase -i --autosquash $param"
         git rebase -i --autosquash $param
         ;;
       r)
         git log --oneline $log_n
-        read -p '可输入 [提交哈希或引用]，或留空对于当前所在提交：' param
-        read -p '可输入 [{ (s)oft | (m)ixed | (h!)ard!! }]，或留空 mixed：' c
+        read -e -p '可输入 [提交哈希或引用]，或留空对于当前所在提交：' param
+        read -e -p '可输入 { (s)oft | (m)ixed | (h!)ard!! }，或留空 mixed：' c
         case $c in
           s|'soft')
             echo ">>> git reset --soft $param"
@@ -541,20 +572,20 @@ submenu_commit() {
         ;;
       rn)
         git log --oneline $log_n
-        read -p '请输入 <提交哈希或提交区间>：' param
+        read -e -p '请输入 <提交哈希或提交区间>：' param
         echo ">>> git revert -n $param"
         git revert -n $param
         ;;
       rm)
         git log --oneline --merges $log_n
         # 只保留父编号是 1 的情况，表示本分支，2 是合并进来的分支
-        read -p '请输入 <合并提交的哈希>：' param
+        read -e -p '请输入 <合并提交的哈希>：' param
         echo ">>> git revert -m 1 $param"
         git revert -m 1 $param
         ;;
       rcas)
         git status --show-stash
-        read -p '请输入 { (c)ontinue | (a)bort | (s)kip }：' c
+        read -e -p '请输入 { (c)ontinue | (a)bort | (s)kip }：' c
         case $c in
           c|'continue')
             echo ">>> git revert --continue"
@@ -589,7 +620,7 @@ submenu_stash() {
   while true; do
     clear
     echo '
----- 暂存 -----
+---- 暂存 ----
   sl    执行 stash 查看暂存列表
   ss    执行 stash 查看暂存记录
 
@@ -603,7 +634,7 @@ submenu_stash() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       sl)
         echo ">>> git stash list"
@@ -611,35 +642,35 @@ submenu_stash() {
         ;;
       ss)
         git stash list
-        read -p '可输入 [暂存编号]，或留空查看最近一次暂存：' param
-        read -p '可输入 [-p] 查看代码差异，或留空只查看变更摘要：' param2
+        read -e -p '可输入 [暂存编号]，或留空查看最近一次暂存：' param
+        read -e -p '可输入 [-p] 查看代码差异，或留空只查看变更摘要：' param2
         echo ">>> git stash show $param2 stash@{${param:-0}}"
         git stash show $param2 stash@{${param:-0}}
         ;;
       spm)
         git stash list
-        read -p '可输入 [{ -u | -a | -p }]，或留空只暂存已跟踪的文件：' param
-        read -p '可输入 [注释文字]，或留空默认：' param2
+        read -e -p '可输入 { -u | -a | -p }，或留空只暂存已跟踪的文件：' param
+        read -e -p '可输入 [注释文字]，或留空默认：' param2
         echo ">>> git stash push $param ${param2:+-m '$param2'}"
         git stash push $param ${param2:+-m "$param2"}
         ;;
       sap)
         git stash list
-        read -p '可输入 [暂存编号]，或留空恢复最近一次暂存：' param
-        read -p '可输入 [pop]，或留空应用 apply：' param2
+        read -e -p '可输入 [暂存编号]，或留空恢复最近一次暂存：' param
+        read -e -p '可输入 [pop]，或留空应用 apply：' param2
         echo ">>> git stash ${param2:-apply} --index stash@{${param:-0}}"
         git stash ${param2:-apply} --index stash@{${param:-0}}
         ;;
       sd)
         git stash list
-        read -p '请输入 <暂存编号>：' param
+        read -e -p '请输入 <暂存编号>：' param
         echo ">>> git stash drop stash@{$param}"
         git stash drop stash@{$param}
         ;;
       sb)
         git stash list
-        read -p '可输入 [暂存编号]，或留空使用最近一次暂存：' param
-        read -p '请输入 <分支名>：' param2
+        read -e -p '可输入 [暂存编号]，或留空使用最近一次暂存：' param
+        read -e -p '请输入 <分支名>：' param2
         echo ">>> git stash branch $param2 stash@{${param:-0}}"
         git stash branch $param2 stash@{${param:-0}}
         ;;
@@ -659,7 +690,7 @@ submenu_tag() {
   while true; do
     clear
     echo '
----- 打标签 -----
+---- 打标签 ----
   tl    执行 tag 查看标签列表
   ss    执行 show 查看标签元数据
 
@@ -674,11 +705,11 @@ submenu_tag() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       tl)
-        read -p '可输入 [标签格式]，支持通配符，或留空显示全部：' param
-        read -p '可输入 [行数] 显示几行注释信息，或留空以行格式显示：' param2
+        read -e -p '可输入 [标签格式]，支持通配符，或留空显示全部：' param
+        read -e -p '可输入 [行数] 显示几行注释信息，或留空以行格式显示：' param2
         if [[ -n "$param2" ]]; then
           echo ">>> git tag ${param:+-l '$param'} -n$param2"
           git tag ${param:+-l "$param"} "-n$param2"
@@ -689,15 +720,15 @@ submenu_tag() {
         ;;
       ss)
         git tag --column=row
-        read -p '请输入 <标签名>，否则显示当前所在提交：' param
+        read -e -p '请输入 <标签名>，否则显示当前所在提交：' param
         echo ">>> git show -s $param"
         git show -s $param
         ;;
       tm)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '可输入 [提交哈希或引用]，或留空对于当前所在提交：' param
-        read -p '请输入 { (m)erged | (n)o-merged }：' c
+        read -e -p '可输入 [提交哈希或引用]，或留空对于当前所在提交：' param
+        read -e -p '请输入 { (m)erged | (n)o-merged }：' c
         case $c in
           m|'merged')
             echo ">>> git tag -n --merged ${param:-HEAD}"
@@ -715,8 +746,8 @@ submenu_tag() {
       tc)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '可输入 [提交哈希或引用]，或留空对于当前所在提交：' param
-        read -p '请输入 { (c)ontains | (n)o-contains }：' c
+        read -e -p '可输入 [提交哈希或引用]，或留空对于当前所在提交：' param
+        read -e -p '请输入 { (c)ontains | (n)o-contains }：' c
         case $c in
           c|'contains')
             echo ">>> git tag -n --contains ${param:-HEAD}"
@@ -732,19 +763,19 @@ submenu_tag() {
         esac
         ;;
       t)
-        read -p '请输入 <标签名> [提交哈希或引用]：' param
-        read -p '可输入 [标签说明]，或留空创建轻量标签：' param2
+        read -e -p '请输入 <标签名> [提交哈希或引用]：' param
+        read -e -p '可输入 [标签说明]，或留空创建轻量标签：' param2
         echo ">>> git tag $param ${param2:+-m '$param2'}"
         git tag $param ${param2:+-m "$param2"}
         ;;
       te)
-        read -p '请输入 <标签名> [提交哈希或引用]：' param
+        read -e -p '请输入 <标签名> [提交哈希或引用]：' param
         echo ">>> git tag -e $param"
         git tag -e $param
         ;;
       td)
         git tag --column=row
-        read -p '请输入 <标签名>：' param
+        read -e -p '请输入 <标签名>：' param
         echo ">>> git tag -d $param"
         git tag -d $param
         ;;
@@ -764,7 +795,7 @@ submenu_branch() {
   while true; do
     clear
     echo '
----- 分支操作 -----
+---- 分支操作 ----
   bv    执行 branch 查看分支列表
   bvl   执行 branch 查找类似名称的分支
 
@@ -773,7 +804,7 @@ submenu_branch() {
 
   b     执行 branch 创建新分支（不切换）
   bm    执行 branch 重命名分支
-  bd    执行 branch 安全删除分支
+  bd    执行 branch 删除分支
 
   bsu   执行 branch 关联远程分支
   buu   执行 branch 取消关联远程分支
@@ -785,25 +816,25 @@ submenu_branch() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       bv)
-        read -p '可输入 [{ -r | -a }]，或留空仅查看本地分支：' param
+        read -e -p '可输入 { -r | -a }，或留空仅查看本地分支：' param
         echo ">>> git branch -vv $param"
         git branch -vv $param
         ;;
       bvl)
-        read -p '请输入 <查找文字>，支持的 Glob 通配符：' param
-        read -p '可输入 [{ -r | -a }]，或留空仅查看本地分支：' param2
+        read -e -p '请输入 <查找文字>，支持的 Glob 通配符：' param
+        read -e -p '可输入 { -r | -a }，或留空仅查看本地分支：' param2
         echo ">>> git branch -vv $param2 --list '$param'"
         git branch -vv $param2 --list "$param"
         ;;
       bvm)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '可输入 [提交哈希或引用]，或留空对于当前分支：' param
-        read -p '可输入 [{ -r | -a }]，或留空仅查看本地分支：' param2
-        read -p '请输入 { (m)erged | (n)o-merged }：' c
+        read -e -p '可输入 [提交哈希或引用]，或留空对于当前分支：' param
+        read -e -p '可输入 { -r | -a }，或留空仅查看本地分支：' param2
+        read -e -p '请输入 { (m)erged | (n)o-merged }：' c
         case $c in
           m|'merged')
             echo ">>> git branch -vv $param2 --merged $param"
@@ -821,9 +852,9 @@ submenu_branch() {
       bvc)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '可输入 [提交哈希或引用]，或留空对于当前分支：' param
-        read -p '可输入 [{ -r | -a }]，或留空仅查看本地分支：' param2
-        read -p '请输入 { (c)ontains | (n)o-contains }：' c
+        read -e -p '可输入 [提交哈希或引用]，或留空对于当前分支：' param
+        read -e -p '可输入 { -r | -a }，或留空仅查看本地分支：' param2
+        read -e -p '请输入 { (c)ontains | (n)o-contains }：' c
         case $c in
           c|'contains')
             echo ">>> git branch -vv $param2 --contains $param"
@@ -841,44 +872,44 @@ submenu_branch() {
       b)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '请输入 <新分支名> [提交哈希或引用]，远程分支自动关联：' param
+        read -e -p '请输入 <新分支名> [提交哈希或引用]，远程分支自动关联：' param
         echo ">>> git branch $param"
         git branch $param
         ;;
       bm)
         git branch -vv
-        read -p '请输入 [旧分支名] <新分支名>：' param
+        read -e -p '请输入 [旧分支名] <新分支名>：' param
         echo ">>> git branch -m $param"
         git branch -m $param
         ;;
       bd)
         git branch -vv
-        read -p '请输入 <分支名>：' param
+        read -e -p '请输入 [-f] <分支名>：' param
         echo ">>> git branch -d $param"
         git branch -d $param
         ;;
       bsu)
         git branch -vv -a
-        read -p '请输入 <远程分支名> [本地分支名]：' param
+        read -e -p '请输入 <远程分支名> [本地分支名]：' param
         echo ">>> git branch --set-upstream-to $param"
         git branch --set-upstream-to $param
         ;;
       buu)
         git branch -vv
-        read -p '可输入 [本地分支名]，或留空对于当前分支：' param
+        read -e -p '可输入 [本地分支名]，或留空对于当前分支：' param
         echo ">>> git branch --unset-upstream $param"
         git branch --unset-upstream $param
         ;;
       c)
         git branch -vv
-        read -p '请输入 <分支名>：' param
+        read -e -p '请输入 <分支名>：' param
         echo ">>> git checkout $param"
         git checkout $param
         ;;
       cb)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '请输入 <新分支名> [提交哈希或引用]，远程分支自动关联：' param
+        read -e -p '请输入 <新分支名> [提交哈希或引用]，远程分支自动关联：' param
         echo ">>> git checkout -b $param"
         git checkout -b $param
         ;;
@@ -898,7 +929,7 @@ submenu_merge() {
   while true; do
     clear
     echo '
----- 合并 -----
+---- 合并 ----
   m     执行 merge 合并提交
   mnc   执行 merge 合并（暂存）
   ms    执行 merge 压缩合并（暂存）
@@ -914,13 +945,13 @@ submenu_merge() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       m)
         git branch -vv -a
-        read -p '请输入 <分支名>：' param
-        read -p '可输入 [提交说明]，或留空使用编辑器撰写：' param2
-        read -p '可输入 [{ (f)f-only | (n)o-ff }] 选择是否快进，或留空自动：' c
+        read -e -p '请输入 <分支名>：' param
+        read -e -p '可输入 [提交说明]，或留空使用编辑器撰写：' param2
+        read -e -p '可输入 { (f)f-only | (n)o-ff } 选择是否快进，或留空自动：' c
         case $c in
           '')
             echo ">>> git merge $param ${param2:+-m '$param2'}"
@@ -941,19 +972,19 @@ submenu_merge() {
         ;;
       mnc)
         git branch -vv -a
-        read -p '请输入 <分支名>：' param
+        read -e -p '请输入 <分支名>：' param
         echo ">>> git merge --no-commit	$param"
         git merge --no-commit	$param
         ;;
       ms)
         git branch -vv -a
-        read -p '请输入 <分支名>：' param
+        read -e -p '请输入 <分支名>：' param
         echo ">>> git merge --squash $param"
         git merge --squash $param
         ;;
       mca)
         git status --show-stash
-        read -p '请输入 { (c)ontinue | (a)bort }：' c
+        read -e -p '请输入 { (c)ontinue | (a)bort }：' c
         case $c in
           c|'continue')
             echo ">>> git merge --continue"
@@ -970,16 +1001,16 @@ submenu_merge() {
         ;;
       c)
         git branch -vv -a
-        read -p '待提取提交所在的分支：' ref
+        read -e -p '待提取提交所在的分支：' ref
         git log --oneline $log_n $ref
-        read -p '请输入 <提交哈希或提交区间>：' param
-        read -p '可输入 [-n] 只应用改动，或留空自动提交：' param2
+        read -e -p '请输入 <提交哈希或提交区间>：' param
+        read -e -p '可输入 [-n] 只应用改动，或留空自动提交：' param2
         echo ">>> git cherry-pick ${param2:--x} $param"
         git cherry-pick ${param2:--x} $param
         ;;
       ccas)
         git status --show-stash
-        read -p '请输入 { (c)ontinue | (a)bort | (s)kip }：' c
+        read -e -p '请输入 { (c)ontinue | (a)bort | (s)kip }：' c
         case $c in
           c|'continue')
             echo ">>> git cherry-pick --continue"
@@ -1001,25 +1032,25 @@ submenu_merge() {
       r)
         git branch -vv -a
         echo "提示：如果需要指定某个特别的提交，可以自行查找，然后复制过来。"
-        read -p '请输入 [-i] <提交哈希或引用>：' param
+        read -e -p '请输入 [-i] <提交哈希或引用>：' param
         echo ">>> git rebase $param"
         git rebase $param
         ;;
       rcas)
         git status --show-stash
-        read -p '请输入 { (c)ontinue | (a)bort | (s)kip }：' c
+        read -e -p '请输入 { (c)ontinue | (a)bort | (s)kip }：' c
         case $c in
           c|'continue')
-            echo ">>> git cherry-pick --continue"
-            git cherry-pick --continue
+            echo ">>> git rebase --continue"
+            git rebase --continue
             ;;
           a|'abort')
-            echo ">>> git cherry-pick --abort"
-            git cherry-pick --abort
+            echo ">>> git rebase --abort"
+            git rebase --abort
             ;;
           s|'skip')
-            echo ">>> git cherry-pick --skip"
-            git cherry-pick --skip
+            echo ">>> git rebase --skip"
+            git rebase --skip
             ;;
           *)
             echo "无效输入：$c"
@@ -1044,7 +1075,7 @@ submenu_grep() {
   while true; do
     clear
     echo '
----- 搜索调试 -----
+---- 搜索调试 ----
   g     执行 grep 搜索指定文字
   b     执行 blame 查看代码责任
 
@@ -1058,47 +1089,47 @@ submenu_grep() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       g)
-        read -p '请输入 [-i] [-w] [-F] [-v] -e <搜索文字>：' param
-        read -p '可输入 [-n] [-p] 等显示参数，或留空默认：' param2
-        read -p '可输入 [提交哈希或引用] [-- 文件或目录]，或留空搜索工作区：' param3
+        read -e -p '请输入 [-i] [-w] [-F] [-v] -e <搜索文字>：' param
+        read -e -p '可输入 [-n] [-p] 等显示参数，或留空默认：' param2
+        read -e -p '可输入 [提交哈希或引用] [-- 文件或目录]，或留空搜索工作区：' param3
         echo ">>> git grep -I $param2 $param $param3"
         git grep -I $param2 $param $param3
         ;;
       b)
-        read -p '请输入 [提交哈希或引用] <-- 文件路径>：' param
-        read -p '可输入 { [:<函数名>] | [-L <起始行>,<终止行>] } 等参数，或留空显示全部：' param2
-        read -p '可输入 [起始日期] 等参数，或留空不限：' param3
+        read -e -p '请输入 [提交哈希或引用] <-- 文件路径>：' param
+        read -e -p '可输入 { :<函数名> | -L <起始行>,<终止行> } 等参数，或留空显示全部：' param2
+        read -e -p '可输入 [起始日期] 等参数，或留空不限：' param3
         echo ">>> git blame ${param3:+--since='$param3'} -w $param2 $param"
         git blame ${param3:+--since="$param3"} -w $param2 $param
         ;;
       bbg)
-        read -p '请输入 { (s)tart | (b)ad | (g)ood | s(k)ip | (r)un | (l)og }：' c
+        read -e -p '请输入 { (s)tart | (b)ad | (g)ood | s(k)ip | (r)un | (l)og }：' c
         case $c in
           s|'start')
-            read -p '可输入 [终点 起点]，或留空全查：' param
+            read -e -p '可输入 [终点 起点]，或留空全查：' param
             echo ">>> git bisect start $param"
             git bisect start $param
             ;;
           b|'bad')
-            read -p '可输入 [提交哈希]，或留空标记当前位置：' param
+            read -e -p '可输入 [提交哈希]，或留空标记当前位置：' param
             echo ">>> git bisect bad $param"
             git bisect bad $param
             ;;
           g|'good')
-            read -p '可输入 [提交哈希]，或留空标记当前位置：' param
+            read -e -p '可输入 [提交哈希]，或留空标记当前位置：' param
             echo ">>> git bisect good $param"
             git bisect good $param
             ;;
           k|'skip')
-            read -p '可输入 [提交哈希]，或留空标记当前位置：' param
+            read -e -p '可输入 [提交哈希]，或留空标记当前位置：' param
             echo ">>> git bisect skip $param"
             git bisect skip $param
             ;;
           r|'run')
-            read -p '请输入 <脚本>：' param
+            read -e -p '请输入 <脚本>：' param
             echo ">>> git bisect run $param"
             git bisect run $param
             ;;
@@ -1106,7 +1137,7 @@ submenu_grep() {
             echo ">>> git bisect log"
             git bisect log
 
-            read -p '可输入 [文件路径] 保存为文件，或留空不保存：' filename
+            read -e -p '可输入 [文件路径] 保存为文件，或留空不保存：' filename
             if [[ -n "$filename" ]]; then
               git bisect log > "$filename"
               echo "文件已保存： $filename"
@@ -1118,14 +1149,14 @@ submenu_grep() {
         esac
         ;;
       bsp)
-        read -p '请输入 { re(s)et | re(p)lay }：' c
+        read -e -p '请输入 { re(s)et | re(p)lay }：' c
         case $c in
           s|'reset')
             echo ">>> git bisect reset"
             git bisect reset
             ;;
           p|'replay')
-            read -p '请输入 <文件路径>：' param
+            read -e -p '请输入 <文件路径>：' param
             echo ">>> git bisect replay $param"
             git bisect replay $param
             ;;
@@ -1136,7 +1167,7 @@ submenu_grep() {
         ;;
       lt)
         git branch -vv -a
-        read -p '可输入 [树对象或引用]，或留空查看当前所在提交：' param
+        read -e -p '可输入 [树对象或引用]，或留空查看当前所在提交：' param
         while true; do
           read -e -p '可输入 [文件或目录]，或 q 退出：' -i "$lt_path" param2
           if [[ "$param2" = "q" ]]; then
@@ -1152,14 +1183,14 @@ submenu_grep() {
         git branch -vv -a
         echo "提示：如果需要指定某个特别的哈希，可以自行查找，然后复制过来。"
         while true; do
-          read -p '可输入 [对象哈希或引用] 和相应的参数，或 q 退出：' param
+          read -e -p '可输入 [对象哈希或引用] 和相应的参数，或 q 退出：' param
           if [[ "$param" = "q" ]]; then
             break
           fi
           echo ">>> git show ${param:---raw}"
           git show ${param:---raw}
         done
-        read -p '可输入 [文件路径] 保存为文件，留空或 q 不保存：' filename
+        read -e -p '可输入 [文件路径] 保存为文件，留空或 q 不保存：' filename
         if [[ "$filename" != "q" && -n "$filename" ]]; then
           git show $param > "$filename"
           echo "文件已保存： $filename"
@@ -1176,12 +1207,12 @@ submenu_grep() {
   done
 }
 
-# 子菜单：远程操作
+# 子菜单：远程仓库
 submenu_remote() {
   while true; do
     clear
     echo '
----- 远程仓库 -----
+---- 远程仓库 ----
   rv    执行 remote 查看远程仓库列表
   rs    执行 remote 查看远程仓库信息
 
@@ -1196,7 +1227,7 @@ submenu_remote() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
       rv)
         echo ">>> git remote -v"
@@ -1204,40 +1235,40 @@ submenu_remote() {
         ;;
       rs)
         git remote
-        read -p '可输入 <仓库别名>，或留空显示 origin：' param
+        read -e -p '可输入 [仓库别名]，或留空显示 origin：' param
         echo ">>> git remote show ${param:-origin}"
         git remote show ${param:-origin}
         ;;
       ra)
         git remote
-        read -p '请输入 <仓库别名> <远程仓库地址>：' param
+        read -e -p '请输入 <仓库别名> <远程仓库地址>：' param
         echo ">>> git remote add $param"
         git remote add $param
         ;;
       rm)
         git remote
-        read -p '请输入 <仓库别名>：' param
+        read -e -p '请输入 <仓库别名>：' param
         echo ">>> git remote remove $param"
         git remote remove $param
         ;;
       rn)
         git remote
-        read -p '请输入 <旧仓库名> <新仓库名>：' param
+        read -e -p '请输入 <旧仓库名> <新仓库名>：' param
         echo ">>> git remote rename $param"
         git remote rename $param
         ;;
       rsu)
         # 取消支持多推送地址，因为修改时不方便。需要时改用多个远程仓库。
         git remote
-        read -p '请输入 <仓库别名> <新仓库地址>：' param
+        read -e -p '请输入 <仓库别名> <新仓库地址>：' param
         echo ">>> git remote set-url $param"
         git remote set-url $param
         ;;
       rp)
         git remote
-        read -p '请输入 <仓库别名>：' param
-        echo ">>> git remote prune $param"
-        git remote prune $param
+        read -e -p '可输入 [仓库别名]，或留空清理 origin：' param
+        echo ">>> git remote prune ${param:-origin}"
+        git remote prune ${param:-origin}
         ;;
       q)
         return ;;
@@ -1257,11 +1288,9 @@ submenu_fetch() {
     # TODO: fetch 暂未实现 --all, --depth, --recurse-submodules
     # TODO: push 暂未实现 --all, --tags
     echo '
----- 远程操作 -----
-  pr    执行 pull 拉取并自动变基
-
-  fp    执行 fetch 获取远程仓库的分支信息
-  fpt   执行 fetch 获取远程仓库的分支和标签信息
+---- 远程操作 ----
+  ppr   执行 pull 拉取并自动变基
+  fp    执行 fetch 获取远程仓库的分支和标签信息
 
   pu    执行 push 首次推送并关联远程分支
   p     执行 push 推送本地分支到远程
@@ -1274,36 +1303,36 @@ submenu_fetch() {
 
 注意：<必填>，[可填]，{ 选填1 | 选填2 }
 '
-    read -p '请选择操作，或 q 返回：' choice
+    read -e -p '请选择操作，或 q 返回：' choice
     case $choice in
-      pr)
+      ppr)
         git branch -vv -a
-        read -p '可输入 [仓库别名 [分支名]]，或留空更新当前分支：' param
-        echo ">>> git pull --rebase $param"
-        git pull --rebase $param
+        read -e -p '可输入 [仓库别名 [分支名]]，或留空更新当前分支：' param
+        echo ">>> git pull --prune --rebase $param"
+        git pull --prune --rebase $param
         ;;
       fp)
         git branch -vv -a
-        read -p '可输入 [仓库别名 [分支名]]，或留空获取上游或默认仓库的所有分支信息：' param
-        echo ">>> git fetch -p $param"
-        git fetch -p $param
-        ;;
-      fpt)
-        git remote
-        read -p '可输入 [仓库别名]，或留空获取上游或默认仓库的分支和标签信息：' param
-        echo ">>> git fetch -p --tags $param"
-        git fetch -p --tags $param
+        read -e -p '可输入 [仓库别名 [分支名]]，或留空获取上游或默认仓库的分支信息：' param
+        read -e -p '可输入 [tags] 进一步获取相关标签信息：' c
+        if [[ "$c" == 'tags' ]]; then
+          echo ">>> git fetch -p --follow-tags $param"
+          git fetch -p --follow-tags $param
+        else
+          echo ">>> git fetch -p $param"
+          git fetch -p $param
+        fi
         ;;
       pu)
         git branch -vv -a
-        read -p '可输入 [仓库别名 [本地分支名[:远程分支名]]]，或留空推送当前分支到 origin：' param
+        read -e -p '可输入 [仓库别名 [本地分支名[:远程分支名]]]，或留空推送当前分支到 origin：' param
         echo ">>> git push -u ${param:-origin HEAD}"
         git push -u ${param:-origin HEAD}
         ;;
       p)
         git branch -vv -a
-        read -p '可输入 [仓库别名 [本地分支名[:远程分支名]]]，或留空推送当前分支到上游：' param
-        read -p '可输入 [{ (f)orce | force-with-(l)ease }]，或留空不覆盖：' c
+        read -e -p '可输入 [仓库别名 [本地分支名[:远程分支名]]]，或留空推送当前分支到上游：' param
+        read -e -p '可输入 { (f)orce | force-with-(l)ease }，或留空不覆盖：' c
         case $c in
           '')
             echo ">>> git push $param"
@@ -1324,34 +1353,25 @@ submenu_fetch() {
         ;;
       pd)
         git branch -r
-        read -p '请输入 <仓库别名> <分支名>：' param
+        read -e -p '请输入 <仓库别名> <分支名>：' param
         echo ">>> git push --delete $param"
         git push --delete $param
         ;;
       pt)
-        read -p '请输入 <仓库别名>：' param
-        read -p '请输入 <标签名> [-f]：' -a param2
-        if [[ -n "$param" && ${#param2[@]} -gt 0 ]]; then
-          param2=("${param2[@]/#/refs/tags/}")
-          echo ">>> git push $param ${param2[@]}"
-          git push "$param" "${param2[@]}"
-        else
-          echo "参数不完整：$param, ${param2[@]}"
-        fi
+        git remote
+        read -e -p '可输入 [仓库别名]，或留空对于 origin：' param
+        git tag --column=row
+        read -e -p '请输入 <标签名> [-f]：' param2
+        echo ">>> git push ${param:-origin} $param2"
+        git push ${param:-origin} $param2
         ;;
       ptd)
         git remote
-        read -p '请输入 <仓库别名>：' param
-        echo ">>> git ls-remote --tags $param"
-        git ls-remote --tags "$param"
-        read -p '请输入 <标签名>，无需输入 refs/tags/ 部分：' -a param2
-        if [[ -n "$param" && ${#param2[@]} -gt 0 ]]; then
-          param2=("${param2[@]/#/refs/tags/}")
-          echo ">>> git push --delete $param ${param2[@]}"
-          git push --delete "$param" "${param2[@]}"
-        else
-          echo "参数不完整：$param, ${param2[@]}"
-        fi
+        read -e -p '可输入 [仓库别名]，或留空对于 origin：' param
+        git tag --column=row
+        read -e -p '请输入 <标签名>：' param2
+        echo ">>> git push --delete ${param:-origin} $param2"
+        git push --delete ${param:-origin} $param2
         ;;
       q)
         return ;;
@@ -1370,7 +1390,7 @@ show_log() {
   local range="$1"
   shift
 
-  read -p '可输入 [{ (o)neline | (n)umstat | (s)tat | (p)atch }]，或留空 oneline：' c
+  read -e -p '可输入 { (o)neline | (n)umstat | (r)aw | (p)atch }，或留空 oneline：' c
   # TODO: 运行正常，echo 不显示双引号，这是默认行为
   case $c in
     ''|o|'oneline')
@@ -1381,9 +1401,9 @@ show_log() {
       echo ">>> git log --numstat --shortstat $@ $range"
       git log --numstat --shortstat --pretty=format:"$pretty_format" "$@" $range
       ;;
-    s|'stat')
-      echo ">>> git log --stat --raw --pretty=fuller $@ $range"
-      git log --stat --raw --pretty=fuller "$@" $range
+    r|'raw')
+      echo ">>> git log --raw --pretty=fuller $@ $range"
+      git log --raw --pretty=fuller "$@" $range
       ;;
     p|'patch')
       echo ">>> git log --patch --stat --pretty=fuller $@ $range"
@@ -1395,7 +1415,7 @@ show_log() {
   esac
 }
 
-# ---------- 脚本入口 ----------
+# -------- 脚本入口 --------
 # 检查是否在 Git 仓库中（非强制，仅为提示）
 if ! git rev-parse --is-inside-work-tree &>/dev/null; then
     echo '警告：当前目录不是 Git 仓库，部分命令可能失败。'
